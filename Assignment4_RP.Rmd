@@ -1,0 +1,226 @@
+---
+title: "Good Foods Analysis"
+author: "Ramya Pinninti"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: bootstrap
+    self_contained: true
+    always_allow_html: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+<style>
+  .submission-node {
+    background-color: #f8f9fa;
+    border-left: 4px solid #007bff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .status-badge.live {
+    background-color: #28a745;
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 12px;
+    font-weight: bold;
+  }
+  .action-btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: 10px;
+  }
+  .action-btn:hover {
+    background-color: #0056b3;
+  }
+  .abstract-container {
+    margin-top: 15px;
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+  }
+</style>
+
+## Overview of Food Metrics Analysis
+
+This interactive dashboard provides a data-driven look into the intersection of global food production, macro-nutritional profiles, and environmental sustainability. By cross-referencing fundamental macronutrient distributions—such as carbohydrates, fats, and proteins—against standardized health frameworks like the Nutri-Score and environmental metrics like the Eco-Score, this tool allows researchers, policy-makers, and consumers to uncover systemic patterns in our food ecosystem. Through exploratory analysis of the top ten food groups (with a focus on products distributed in English-speaking countries), the dashboard highlights the critical friction points where high-volume consumer staples carry nutritional and ecological implications.
+
+
+## Dataset Technical Specifications & Data Dictionary
+
+The empirical basis of this dashboard is derived from the comprehensive global food composition dataset, analyzing dense micro and macro-nutritional vectors paired with environmental sustainability indices per 100 grams of product. The data set consists of 1,982,824 food product observations, primarily sourced from France and the United States, obtained from Kaggle.com and available through Open Food Facts.
+
+The observations were filtered for English-language values: about 31,800 observations represent the baseline dataset size (products that have both a Nutri-Score and an Eco-Score grade filled out).
+
+About 19,090 observations explicitly listed exact sugar/carbohydrate mass counts in the dataset.
+
+```{r data-dictionary, echo=FALSE, message=FALSE, warning=FALSE}
+library(tibble)
+library(DT)
+
+# Create an interactive data dictionary for the food metrics dataset
+food_dictionary <- tribble(
+  ~`Variable Name`, ~`Description`, ~`Variable Type`,
+  "Food Groups En", "The primary English classification mapping products into standardized aggregated industries (e.g., Sugary snacks, Milk and dairy products). Used as the main global dashboard filter.", "Categorical (Dimension)",
+  "Product Name",   "The clean, English-filtered commercial nomenclature or brand classification assigned to an individual food item.", "Categorical (Dimension)",
+  "Carbohydrates",  "The total mass of carbohydrate molecules present per 100 grams of product, serving as the primary X-axis basis for the Sugar Trap matrix.", "Numeric (Continuous Measure)",
+  "Sugars",         "The total mass of pure monosaccharides and disaccharides accumulated per 100 grams, exposing targeted processing additives.", "Numeric (Continuous Measure)",
+  "Fats",           "The total mass of lipid structures and lipid-based content evaluated per 100 grams of product across food categories.", "Numeric (Continuous Measure)",
+  "Proteins",       "The total mass of amino acid structural chains evaluated per 100 grams, completing the primary macronutrient profile matrix.", "Numeric (Continuous Measure)",
+  "Nutriscore Grade","A standardized, categorical health-index classification ranking nutritional density from Grade A (Optimal) to Grade E (Deficient).", "Categorical (Ordinal Dimension)",
+  "Nutriscore Score","The underlying absolute discrete numerical integer calculated by compounding positive and negative nutritional vectors.", "Numeric (Discrete Measure)",
+  "Ecoscore Grade",  "A standardized categorical metric mapping the environmental footprint and manufacturing degradation tier from Grade A (Lowest impact) to Grade E (Highest impact).", "Categorical (Ordinal Dimension)",
+  "Ecoscore Score",  "The underlying absolute scale score ranging from 0 to 100, tracking total ecological impact used to build the frequency histogram.", "Numeric (Continuous Measure)"
+)
+
+# Render the interactive DT table 
+datatable(
+  food_dictionary,
+  caption = htmltools::tags$caption(
+    style = 'caption-side: top; text-align: left; color: #333; font-weight: bold; font-size: 14px; margin-bottom: 8px;',
+    'Table 1: Unified Variable Definitions, Metric Standards, and Analytical Types'
+  ),
+  rownames = FALSE,
+  options = list(
+    pageLength = 10,
+    dom = 't', 
+    initComplete = JS(
+      "function(settings, json) {",
+      "$(this.api().table().header()).css({'background-color': '#f4f4f6', 'color': '#1a1a1a', 'font-family': 'sans-serif'});",
+      "}"
+    )
+  )
+)
+
+```
+
+
+
+
+## Interactive Dashboard
+
+
+---
+
+<table style="width: 100%; border: none;">
+<tr>
+<td style="text-align: center; padding: 10px;">
+
+<div class='tableauPlaceholder' id='viz_fixed_good_foods' style='position: relative; width: 100%; max-width: 100%; height: 800px; margin: 0 auto;'>
+  <object class='tableauViz' style='display:none;'>
+    <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+    <param name='embed_code_version' value='3' />
+    <param name='site_root' value='' />
+    <param name='name' value='GoodFoodsAnalysis/Dashboard1' />
+    <param name='tabs' value='no' />
+    <param name='toolbar' value='yes' />
+    <param name='animate_transition' value='yes' />
+    <param name='display_static_image' value='no' />
+    <param name='display_spinner' value='yes' />
+    <param name='display_overlay' value='yes' />
+    <param name='display_count' value='yes' />
+    <param name='language' value='en-US' />
+    <param name='filter' value='publish=yes' />
+  </object>
+</div>
+
+<script type='text/javascript' src='https://public.tableau.com/javascripts/api/viz_v1.js'></script>
+
+<script type='text/javascript'>
+  var divElement = document.getElementById('viz_fixed_good_foods');
+  var vizElement = divElement.getElementsByTagName('object')[0];
+  vizElement.style.width='100%';
+  vizElement.style.height='800px';
+</script>
+
+</td>
+</tr>
+</table>
+
+---
+
+
+## Data Narrative & Insights
+
+### Situation
+The modern food industry is facing unprecedented pressure to balance nutritional density with environmental accountability as consumers demand transparency regarding what they consume. By analyzing the macro profiles of the top ten food groups alongside their corresponding Eco-Score and Nutri-Score distributions, we can establish a baseline understanding of our current food ecosystem's health. Initial aggregation indicates high volume stability and product frequency across core categories like dairy, grains, and snack items, which serve as the primary caloric drivers in the average consumer diet.
+
+### Complication
+However, exploring the data layers reveals a stark, deeply troubling friction between what is mass-produced and what is sustainable. Outlier analysis within the **"Sugar Trap"** scatter plot shows an aggressive compounding concentration of simple sugars as total carbohydrate values rise, heavily dominated by high-volume categories like biscuits, cakes, and sweets. Furthermore, when cross-referencing these items with the **Eco-Score Grade Distribution**, our highest-volume consumer staples—such as cheeses and sweets—are overwhelmingly bottlenecked in the poorest environmental tiers (Grades D and E), signaling that our most popular food categories carry the heaviest ecological and nutritional penalties.
+
+### Question
+This systemic imbalance poses a critical question for product development and public health: How can food manufacturers decouple high-volume product categories from severe nutritional and environmental degradation, and where are the optimal macro thresholds to shift products out of the "Sugar Trap" and into favorable Eco-Score bands?
+
+### Answer
+The data demonstrates that the solution requires an aggressive reformulation strategy that targets high-volume category outliers like biscuits and dairy. By optimizing the balance of healthy fats and proteins while reducing simple sugar spikes—thereby sliding down the linear curve of the Sugar Trap matrix—manufacturers can systematically improve a product's Nutri-score. Concurrently, by correcting the supply chain inefficiencies causing the negative anomalies in the Ecoscore frequency histogram, we can move products into the favorable "A" and "B" eco-grade distributions without sacrificing consumer volume.
+
+
+## Analysis Storyboard
+
+---
+
+<table style="width: 100%; border: none;">
+<tr>
+<td style="text-align: center; padding: 10px;">
+
+<div class='tableauPlaceholder' id='viz1782094152624' style='position: relative;'>
+  <object class='tableauViz' style='display:none;'>
+    <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+    <param name='embed_code_version' value='3' />
+    <param name='site_root' value='' />
+    <param name='name' value='GoodFoodsAnalysis/Story1' />
+    <param name='tabs' value='no' />
+    <param name='toolbar' value='yes' />
+    <param name='animate_transition' value='yes' />
+    <param name='display_static_image' value='no' />
+    <param name='display_spinner' value='yes' />
+    <param name='display_overlay' value='yes' />
+    <param name='display_count' value='yes' />
+    <param name='language' value='en-US' />
+    <param name='filter' value='publish=yes' />
+  </object>
+</div>
+
+<script type='text/javascript'>
+  var divElement = document.getElementById('viz1782094152624');
+  var vizElement = divElement.getElementsByTagName('object')[0];
+  vizElement.style.width='100%';
+  vizElement.style.height='850px'; /* Slightly taller to accommodate story navigation tabs */
+  
+  var scriptElement = document.createElement('script');
+  scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+  vizElement.parentNode.insertBefore(scriptElement, vizElement);
+</script>
+
+</td>
+</tr>
+</table>
+
+---
+
+
+## Data Narrative & Insights
+
+### Summary of Critical Insights Driving Decisions
+
+**The Sugar Trap Ceiling**: The scatter plot reveals a tight, linear correlation where high carbohydrate concentration almost universally signals a catastrophic spike in pure sugar content, leaving virtually no "low-sugar, high-carb" options among processed food categories.
+
+**The Dairy Environmental Penalty**: The Eco-Score bar chart highlights cheese as a massive ecological outlier; despite its high protein and fat density, it commands the largest volume of absolute "Grade E" (worst performing) designations across the entire inventory.
+
+**The Eco-Nutritional Divergence**: The negative regression line in the Avg. Nutriscore by Ecoscore plot reveals that products with superior environmental scores (higher Eco-scores) often carry a compromise in standardized nutritional grades, proving that green branding does not automatically equal a healthier macro profile.
+
+**The Volume vs. Health Paradox**: The Ecoscore Grade Frequency histogram demonstrates a severe right-skewed volume bias. The vast majority of available consumer products are heavily clustered between the 60 to 80 score range, showing that eco-friendly options (Scores 90+) remain a niche, low-volume market segment.
+
+
+
+
+
+

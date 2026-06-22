@@ -56,7 +56,7 @@ This interactive dashboard provides a data-driven look into the intersection of 
 
 ## Dataset Technical Specifications & Data Dictionary
 
-The empirical basis of this dashboard is derived from the comprehensive global food composition dataset, analyzing dense micro and macro-nutritional vectors paired with environmental sustainability indices per 100 grams of product. The data set consists of 1,982,824 food product observations, primarily sourced from France and the United States.
+The empirical basis of this dashboard is derived from the comprehensive global food composition dataset, analyzing dense micro and macro-nutritional vectors paired with environmental sustainability indices per 100 grams of product. The data set consists of 1,982,824 food product observations, primarily sourced from France and the United States, obtained from Kaggle.com and available through Open Food Facts.
 
 The observations were filtered for English-language values: about 31,800 observations represent the baseline dataset size (products that have both a Nutri-Score and an Eco-Score grade filled out).
 
